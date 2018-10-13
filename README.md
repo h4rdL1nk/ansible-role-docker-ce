@@ -7,10 +7,15 @@ MOLECULE_EPHEMERAL_DIRECTORY="${PWD}/.molecule"
 export MOLECULE_EPHEMERAL_DIRECTORY
 ```
 
-### Launch molecule commands
+### Launch molecule role testing commands
 ```
 molecule create
 molecule converge
 molecule idempotence
 molecule destroy
+```
+
+### Launch complete molecule test
+```
+molecule test
 ```

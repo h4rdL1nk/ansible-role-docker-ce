@@ -13,7 +13,7 @@ lint:
 platforms:
   - name: instance-1
     config_options:
-      synced_folder: False
+      synced_folder: false
     box: centos/7
     memory: 512
     cpus: 1
@@ -25,8 +25,8 @@ platforms:
 provisioner:
   name: ansible
   options:
-    become: True
-  log: True
+    become: true
+  log: true
   lint:
     name: ansible-lint
 

@@ -11,11 +11,11 @@
     description: Docker Community Edition repository
     baseurl: "https://download.docker.com/linux/centos/7/{{ ansible_architecture }}/stable"
     gpgkey: https://download.docker.com/linux/centos/gpg
-    gpgcheck: yes
+    gpgcheck: true
 - name: Install docker
   yum:
     state: present
-    update_cache: yes
+    update_cache: true
     name:
       - lvm2
       - python-docker-py
@@ -27,7 +27,7 @@
     path: "{{ docker.config.systemd.unit }}"
     regexp: "^ExecStart=.*"
     replace: "ExecStart=/usr/bin/dockerd"
-    backup: yes
+    backup: true
   notify:
     - daemon_reload
     - docker_restart
@@ -51,7 +51,7 @@
   service:
     name: docker
     state: started
-    enabled: yes
+    enabled: true
 - name: Create index file
   copy:
     dest: /data/dockershared/apache_server/index.html
