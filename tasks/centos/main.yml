@@ -4,6 +4,7 @@
   selinux:
     policy: targeted
     state: enforcing
+
 - name: Add docker repo
   yum_repository:
     name: Docker-CE-stable
@@ -12,6 +13,7 @@
     baseurl: "https://download.docker.com/linux/centos/7/{{ ansible_architecture }}/stable"
     gpgkey: https://download.docker.com/linux/centos/gpg
     gpgcheck: true
+
 - name: Install docker
   yum:
     state: present
@@ -22,6 +24,7 @@
       - yum-utils
       - device-mapper-persistent-data
       - docker-ce
+
 - name: Edit systemd unit file
   replace:
     path: "{{ docker.config.systemd.unit }}"
@@ -31,7 +34,9 @@
   notify:
     - daemon_reload
     - docker_restart
+
 - meta: flush_handlers
+
 - name: Create docker directories
   file:
     path: "{{ item }}"
@@ -40,18 +45,22 @@
     - /etc/docker
     - /data/dockershared
     - /data/dockershared/apache_server
+
 - name: Create docker config file
   copy:
     dest: /etc/docker/daemon.json
     content: "{{ docker.config.daemon | to_nice_json }}"
   notify:
     - docker_restart
+
 - meta: flush_handlers
+
 - name: Enable docker service
   service:
     name: docker
     state: started
     enabled: true
+
 - name: Create index file
   copy:
     dest: /data/dockershared/apache_server/index.html
@@ -59,6 +68,7 @@
       <html>
         <h1>It works!</h1>
       </html>
+
 - name: Start httpd container
   docker_container:
     name: apache_server

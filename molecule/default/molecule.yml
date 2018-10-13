@@ -1,6 +1,9 @@
 ---
+
 dependency:
   name: galaxy
+  optiones:
+    role-file: requirements.yml
 
 driver:
   name: vagrant
