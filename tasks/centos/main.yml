@@ -28,6 +28,10 @@
     regexp: "^ExecStart=.*"
     replace: "ExecStart=/usr/bin/dockerd"
     backup: yes
+  notify:
+    - daemon_reload
+    - docker_restart
+- meta: flush_handlers
 - name: Create docker directories
   file:
     path: "{{ item }}"
@@ -40,10 +44,13 @@
   copy:
     dest: /etc/docker/daemon.json
     content: "{{ docker.config.daemon | to_nice_json }}"
+  notify:
+    - docker_restart
+- meta: flush_handlers
 - name: Enable docker service
   service:
     name: docker
-    state: restarted
+    state: started
     enabled: yes
 - name: Create index file
   copy:
