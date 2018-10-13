@@ -1,0 +1,84 @@
+---
+- hosts: all
+  become: true
+  vars:
+    docker:
+      config:
+        daemon:
+          hosts:
+            - "unix:///var/run/docker.sock"
+            - "tcp://0.0.0.0:2375"
+          bip: "172.17.0.1/16"
+          storage-driver: "devicemapper"
+          storage-opts:
+            - "dm.directlvm_device=/dev/sdb"
+            - "dm.thinp_percent=95"
+            - "dm.thinp_metapercent=1"
+            - "dm.thinp_autoextend_threshold=80"
+            - "dm.thinp_autoextend_percent=20"
+            - "dm.directlvm_device_force=true"
+        systemd:
+          unit: /lib/systemd/system/docker.service
+  tasks:
+    - name: Enable SELinux
+      selinux:
+        policy: targeted
+        state: enforcing
+    - name: Add docker repo
+      yum_repository:
+        name: Docker-CE-stable
+        state: present
+        description: Docker Community Edition repository
+        baseurl: "https://download.docker.com/linux/centos/7/{{ ansible_architecture }}/stable"
+        gpgkey: https://download.docker.com/linux/centos/gpg
+        gpgcheck: yes
+    - name: Install docker
+      yum:
+        state: present
+        update_cache: yes
+        name:
+          - lvm2
+          - python-docker-py
+          - yum-utils
+          - device-mapper-persistent-data
+          - docker-ce
+    - name: Edit systemd unit file
+      replace:
+        path: "{{ docker.config.systemd.unit }}"
+        regexp: "^ExecStart=.*"
+        replace: "ExecStart=/usr/bin/dockerd"
+        backup: yes
+    - name: Create docker directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - /etc/docker
+        - /data/dockershared
+        - /data/dockershared/apache_server
+    - name: Create docker config file
+      copy:
+        dest: /etc/docker/daemon.json
+        content: "{{ docker.config.daemon | to_nice_json }}"
+    - name: Enable docker service
+      service:
+        name: docker
+        state: restarted
+        enabled: yes
+    - name: Create index file
+      copy:
+        dest: /data/dockershared/apache_server/index.html
+        content: |
+          <html>
+            <h1>It works!</h1>
+          </html>
+    - name: Start httpd container
+      docker_container:
+        name: apache_server
+        image: httpd:alpine
+        state: started
+        memory: 50m
+        ports:
+          - "8080:80"
+        volumes:
+          - "/data/dockershared/apache_server:/usr/local/apache2/htdocs:Z"
