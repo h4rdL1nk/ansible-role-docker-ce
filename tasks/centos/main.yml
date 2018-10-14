@@ -39,7 +39,6 @@
   with_items:
     - /etc/docker
     - /data/dockershared
-    - /data/dockershared/apache_server
 
 - name: Create docker config file
   copy:
@@ -55,22 +54,3 @@
     name: docker
     state: started
     enabled: true
-
-- name: Create index file
-  copy:
-    dest: /data/dockershared/apache_server/index.html
-    content: |
-      <html>
-        <h1>It works!</h1>
-      </html>
-
-- name: Start httpd container
-  docker_container:
-    name: apache_server
-    image: httpd:alpine
-    state: started
-    memory: 50m
-    ports:
-      - "8080:80"
-    volumes:
-      - "/data/dockershared/apache_server:/usr/local/apache2/htdocs:Z"
