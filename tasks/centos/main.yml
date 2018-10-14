@@ -1,10 +1,5 @@
 ---
 
-- name: Enable SELinux
-  selinux:
-    policy: targeted
-    state: enforcing
-
 - name: Add docker repo
   yum_repository:
     name: Docker-CE-stable
