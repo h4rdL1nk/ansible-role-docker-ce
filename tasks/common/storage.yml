@@ -1,0 +1,14 @@
+---
+
+- name: Create volume group
+  lvg:
+    vg: "{{ lvm.thinpool.vg }}"
+    pvs: "{{ lvm.thinpool.pv }}"
+    state: present
+
+- name: Create thinpool
+  lvol:
+    vg: "{{ lvm.thinpool.vg }}"
+    thinpool: "{{ lvm.thinpool.lv }}"
+    size: "{{ lvm.thinpool.size }}"
+    shrink: false
