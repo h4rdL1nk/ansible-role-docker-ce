@@ -22,7 +22,7 @@
 
 - name: Edit systemd unit file
   replace:
-    path: "{{ docker.config.systemd.unit }}"
+    path: "{{ docker_config_systemd_unit }}"
     regexp: "^ExecStart=.*"
     replace: "ExecStart=/usr/bin/dockerd"
     backup: true
@@ -43,7 +43,7 @@
 - name: Create docker config file
   copy:
     dest: /etc/docker/daemon.json
-    content: "{{ docker.config.daemon | to_nice_json }}"
+    content: "{{ docker_config_daemon | to_nice_json }}"
   notify:
     - docker_restart
 

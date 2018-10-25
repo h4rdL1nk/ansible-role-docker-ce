@@ -2,13 +2,13 @@
 
 - name: Create volume group
   lvg:
-    vg: "{{ lvm.thinpool.vg }}"
-    pvs: "{{ lvm.thinpool.pv }}"
+    vg: "{{ lvm_thinpool_vg }}"
+    pvs: "{{ lvm_thinpool_pv }}"
     state: present
 
 - name: Create thinpool
   lvol:
-    vg: "{{ lvm.thinpool.vg }}"
-    thinpool: "{{ lvm.thinpool.lv }}"
-    size: "{{ lvm.thinpool.size }}"
+    vg: "{{ lvm_thinpool_vg }}"
+    thinpool: "{{ lvm_thinpool_lv }}"
+    size: "{{ lvm_thinpool_size }}"
     shrink: false
