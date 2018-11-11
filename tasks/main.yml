@@ -1,4 +1,6 @@
 ---
 
+- include_tasks: "common/kernel.yml"
 - include_tasks: "common/storage.yml"
+  when: lvm_thinpool_config
 - include_tasks: "{{ ansible_distribution | lower }}/main.yml"

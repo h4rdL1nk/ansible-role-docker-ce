@@ -1,2 +1,18 @@
 ---
-# defaults file for docker-ce
+
+lvm_thinpool_config: false
+lvm_thinpool_pv: /dev/sdb
+lvm_thinpool_vg: docker
+lvm_thinpool_lv: thinpool
+lvm_thinpool_size: 100%FREE
+
+docker_config_systemd_unit: /lib/systemd/system/docker.service
+docker_config_sysctl_entries:
+  net.ipv4.ip_forward: 1
+docker_config_daemon: 
+  hosts:
+    - "unix:///var/run/docker.sock"
+    - "tcp://0.0.0.0:2375"
+  bip: "172.17.0.1/16"
+  exec-opts:
+    - "native.cgroupdriver=systemd"

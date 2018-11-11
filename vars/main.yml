@@ -1,11 +1,11 @@
 ---
 
+lvm_thinpool_config: true
 lvm_thinpool_pv: /dev/sdb
 lvm_thinpool_vg: docker
 lvm_thinpool_lv: thinpool
 lvm_thinpool_size: 100%FREE
 
-docker_config_systemd_unit: /lib/systemd/system/docker.service
 docker_config_daemon:
   hosts:
     - "unix:///var/run/docker.sock"
@@ -15,6 +15,6 @@ docker_config_daemon:
     - "native.cgroupdriver=systemd"
   storage-driver: "devicemapper"
   storage-opts:
-    - "dm.thinpooldev=/dev/mapper/{{ lvm.thinpool.vg }}-{{ lvm.thinpool.lv }}"
+    - "dm.thinpooldev=/dev/mapper/{{ lvm_thinpool_vg }}-{{ lvm_thinpool_lv }}"
     - "dm.use_deferred_removal=true"
     - "dm.use_deferred_deletion=true"
